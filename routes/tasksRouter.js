@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const addTask = ({ title, description, completed } = req.body);
 
-  const isValid = validateInputs(addTask, res);
+  const isValid = validateInputs(addTask);
   if (!isValid?.status) {
     return res.status(400).send("Invalid Input! " + isValid?.message);
   }
@@ -47,6 +47,10 @@ router.put("/:id", (req, res) => {
   const { title, description } = req.body;
 
   const updateTask = getTaskById(id);
+  const isValid = validateInputs(updateTask);
+  if (!isValid?.status) {
+    return res.status(400).send("Invalid Input! " + isValid?.message);
+  }
   updateTask.title = title ? title : updateTask?.title;
   updateTask.description = description ? description : updateTask?.description;
   return res
