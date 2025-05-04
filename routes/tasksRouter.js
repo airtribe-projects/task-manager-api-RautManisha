@@ -1,4 +1,8 @@
 const express = require("express");
+const {
+  getTaskById,
+  validateInputs,
+} = require("../controllers/taskController");
 const router = express.Router();
 router.use(express.json());
 
@@ -9,28 +13,29 @@ router.get("/", (req, res) => {
   return res.status(200).json(result);
 });
 
-router.get("/:taskId", (req, res) => {
-  const param = Number(req.params.taskId);
-  let allTasks = [...tasks];
-  const task = allTasks.find((task) => task.id == param);
+router.get("/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const task = getTaskById(id);
   if (!task) {
-    return res.send("Not found");
+    return res.status(404).send("Not found");
   }
-  res.send(task);
+  res.status(200).send(task);
 });
 
 router.post("/", (req, res) => {
-  const { title, description } = req.body;
+  const addTask = ({ title, description, completed } = req.body);
 
-  console.log(req.body);
-
+  const isValid = validateInputs(addTask, res);
+  if (!isValid?.status) {
+    return res.status(400).send("Invalid Input! " + isValid?.message);
+  }
   const latestTask = tasks[tasks.length - 1];
   const id = latestTask ? latestTask.id + 1 : 1;
   const task = {
     id,
     title: title.trim(),
     description: description.trim(),
-    completed: false,
+    completed: completed || "false",
     createdAt: new Date(),
   };
   tasks.push(task);
@@ -41,23 +46,24 @@ router.put("/:id", (req, res) => {
   const id = Number(req.params.id);
   const { title, description } = req.body;
 
-  console.log(req.body);
-  const currentTask = tasks?.find((t) => t?.id === id);
-  currentTask.title = title ? title : currentTask?.title;
-  currentTask.description = description
-    ? description
-    : currentTask?.description;
+  const updateTask = getTaskById(id);
+  updateTask.title = title ? title : updateTask?.title;
+  updateTask.description = description ? description : updateTask?.description;
   return res
     .status(201)
-    .json({ message: `Task created with ID: ${id}`, currentTask });
+    .json({ message: `Task created with ID: ${id}`, task: updateTask });
 });
 
 router.delete("/:id", (req, res) => {
   const id = Number(req.params.id);
   const taskIndex = tasks.findIndex((task) => task.id === id);
-  console.log(req.body);
+  if (taskIndex === -1) {
+    return res.status(404).send({ message: `Id ${id} Not found!` });
+  }
   const deletedTask = tasks.splice(taskIndex, 1)[0];
-  return res.status(201).json({ message: `Task deleted: ${id}`, tasks });
+  return res
+    .status(201)
+    .json({ message: `Task deleted: ${id}`, task: deletedTask });
 });
 
 module.exports = router;
