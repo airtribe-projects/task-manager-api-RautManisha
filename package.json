@@ -4,19 +4,35 @@
   "description": "Assignment 1 for backend engineering launchpad",
   "main": "index.js",
   "scripts": {
+    "dev": "node app.js",
     "pretest": "node -e \"if (process.version.slice(1).split('.')[0] < 18) { console.error('Unsupported Node.js version, please use version 18'); process.exit(1); }\"",
     "test": "tap test/*.js --disable-coverage"
   },
   "author": "Airtribe",
   "license": "ISC",
   "devDependencies": {
+    "nodemon": "^3.1.10",
     "supertest": "^6.3.4",
-    "tap": "^18.6.1"
+    "tap": "^18.8.0"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "nvm": "^0.0.4"
   },
   "engines": {
     "node": ">= 18.0.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airtribe-projects/task-manager-api-RautManisha.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/airtribe-projects/task-manager-api-RautManisha/issues"
+  },
+  "homepage": "https://github.com/airtribe-projects/task-manager-api-RautManisha#readme"
 }
