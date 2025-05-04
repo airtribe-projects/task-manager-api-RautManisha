@@ -37,7 +37,8 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const addTask = ({ title, description, completed, priority } = req.body);
+  const addTask = ({ title, description, completed, priority } =
+    req.body || {});
 
   const isValid = validateInputs(addTask);
   if (!isValid?.status) {
@@ -59,9 +60,12 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const id = Number(req.params.id);
-  const input = ({ title, description, priority } = req.body);
+  const input = ({ title, description, priority } = req.body || {});
 
   let updateTask = getTaskById(id);
+  if (!updateTask) {
+    return res.status(404).send("Task not found");
+  }
   const isValid = validateInputs(input);
   if (!isValid?.status) {
     return res.status(400).send("Invalid Input! " + isValid?.message);
@@ -80,7 +84,7 @@ router.delete("/:id", (req, res) => {
   }
   const deletedTask = tasks.splice(taskIndex, 1)[0];
   return res
-    .status(201)
+    .status(204)
     .json({ message: `Task deleted: ${id}`, task: deletedTask });
 });
 

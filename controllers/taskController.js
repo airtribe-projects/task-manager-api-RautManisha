@@ -2,11 +2,11 @@ const { tasks } = require("../models/task");
 const validPriorities = ["low", "medium", "high"];
 
 const getTaskById = (id) => {
-  return tasks?.find((t) => t?.id === id);
+  return tasks.find((t) => t?.id === id);
 };
 
 const isValidPriority = (priority) => {
-  return validPriorities.includes(String(priority)?.toLocaleLowerCase());
+  return validPriorities.includes(String(priority).toLocaleLowerCase());
 };
 
 const validateInputs = (input) => {
@@ -28,7 +28,7 @@ const validateInputs = (input) => {
       message: "Please enter valid priority: low, medium or high",
     };
   }
-  if (input?.completed && typeof input?.completed !== "boolean") {
+  if (input?.completed && typeof input.completed !== "boolean") {
     return {
       status: false,
       message: "Please enter valid Boolean for Completed!",
